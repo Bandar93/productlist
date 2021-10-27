@@ -1,3 +1,4 @@
+const { json } = require("express");
 const Product = require("../../db/models/Products");
 
 const productlistFetch = async (req , res) => {
@@ -35,5 +36,26 @@ const productDelete = async (req,res) => {
 }
 }
 
+const productUpdate = async (req,res) => {
+    // const productId = res.params.productId;
+    const { productId } = req.params;
+    try{ 
+    const product = await Product.findByIdAndUpdate(
+        {_id: productId},
+        req.body,
+        {new: true }
+    );
+    if (product){
+        return res.json(product);
+
+    }else {
+        return res.status(404),json({ massage: "Not Found"});
+    }
+
+    } catch (error) {
+        return res.status(500).json({massage: "error"})
+    }
+}
+
 module.exports = {productlistFetch,
-productCreate, productDelete};
+productCreate, productDelete,productUpdate};
